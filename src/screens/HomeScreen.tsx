@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -9,32 +9,33 @@ import {
   TextInput,
   ActivityIndicator,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { toggleTheme, toggleLanguage } from '../store/characterSlice';
-import { fetchCharacters } from '../store/characterThunks';
-import { RootState } from '../store'; // Assuming you have a RootState type
-import { Character } from '../types/marvel';
-import { useTranslation } from 'react-i18next';
-import { convertToHttps } from '../utils';
+import {useDispatch, useSelector} from 'react-redux';
+import {toggleTheme, toggleLanguage} from '../store/characterSlice';
+import {fetchCharacters} from '../store/characterThunks';
+import {RootState} from '../store'; // Assuming you have a RootState type
+import {Character} from '../types/marvel';
+import {useTranslation} from 'react-i18next';
+import {convertToHttps} from '../utils';
 
-const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const dispatch = useDispatch();
-  const characters = useSelector((state: RootState) => state.characters.characters);
+  const characters = useSelector(
+    (state: RootState) => state.characters.characters,
+  );
   const loading = useSelector((state: RootState) => state.characters.loading);
   const theme = useSelector((state: RootState) => state.characters.theme);
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
 
   // Fetch characters on page change
   useEffect(() => {
-    dispatch(fetchCharacters({ limit: 10, offset: page * 10 }));
-    console.log(`Fetching page: ${page}, offset: ${page * 10}`);
+    dispatch(fetchCharacters({limit: 10, offset: page * 10}));
   }, [dispatch, page]); // Include page in the dependency array
 
   const loadMoreCharacters = useCallback(() => {
     if (!loading) {
-      setPage((prevPage) => prevPage + 1);
+      setPage(prevPage => prevPage + 1);
     }
   }, [loading]);
 
@@ -42,26 +43,35 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     setSearch(text);
   };
 
-  const filteredCharacters = characters.filter((character) =>
-    character.name.toLowerCase().includes(search.toLowerCase())
+  const filteredCharacters = characters.filter(character =>
+    character.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   const renderFooter = () => {
-    return <>
-      {loading && page > 0 ? <View style={styles.footerLoader}>
-        <ActivityIndicator size="large" color="#007BFF" />
-      </View> : null}
-    </>
-  }
+    return (
+      <>
+        {loading && page > 0 ? (
+          <View style={styles.footerLoader}>
+            <ActivityIndicator size="large" color="#007BFF" />
+          </View>
+        ) : null}
+      </>
+    );
+  };
 
-  const renderCharacterItem = ({ item }: { item: Character }) => (
+  const renderCharacterItem = ({item}: {item: Character}) => (
     <TouchableOpacity
       key={`${item.id}${item.name}`}
       style={[styles.itemContainer, themeStyles[theme].itemContainer]}
-      onPress={() => navigation.navigate('CharacterDetailScreen', { characterId: item.id })}
-    >
+      onPress={() =>
+        navigation.navigate('CharacterDetailScreen', {characterId: item.id})
+      }>
       <Image
-        source={{ uri: `${convertToHttps(item.thumbnail.path)}.${item.thumbnail.extension}` }}
+        source={{
+          uri: `${convertToHttps(item.thumbnail.path)}.${
+            item.thumbnail.extension
+          }`,
+        }}
         style={styles.thumbnail}
       />
       <Text style={[styles.name, themeStyles[theme].text]}>{item.name}</Text>
@@ -85,7 +95,7 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         <FlatList
           data={filteredCharacters}
           renderItem={renderCharacterItem}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={item => item.id.toString()}
           contentContainerStyle={styles.listContainer}
           onEndReached={loadMoreCharacters}
           onEndReachedThreshold={0.9}
@@ -93,23 +103,19 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         />
       )}
 
-
-
       <TouchableOpacity
         style={styles.themeToggleButton}
-        onPress={() => dispatch(toggleTheme())}
-      >
-        <Text style={themeStyles[theme].text}>
-          {t('toggleTheme')}
-        </Text>
+        onPress={() => dispatch(toggleTheme())}>
+        <Text style={themeStyles[theme].text}>{t('toggleTheme')}</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.languageToggleButton}
-        onPress={() => i18n.language === 'en' ? i18n.changeLanguage('ar') : i18n.changeLanguage('en')}
-      >
-        <Text style={themeStyles[theme].text}>
-          {t('toggleLanguage')}
-        </Text>
+        onPress={() =>
+          i18n.language === 'en'
+            ? i18n.changeLanguage('ar')
+            : i18n.changeLanguage('en')
+        }>
+        <Text style={themeStyles[theme].text}>{t('toggleLanguage')}</Text>
       </TouchableOpacity>
     </View>
   );

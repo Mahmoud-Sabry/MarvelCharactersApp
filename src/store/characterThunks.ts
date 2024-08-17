@@ -28,15 +28,12 @@ export const fetchCharacters = createAsyncThunk(
             const response = await api.get('/characters', {
                 params: { limit, offset },
             });
-
-            console.log('Fetched Characters:', response.data);
             return {
                 characters: response.data.data.results as Character[],
                 total: response.data.data.total,
                 offset
             };
         } catch (error) {
-            console.error('Failed to fetch characters:', error);
             throw error;
         }
     }
@@ -48,10 +45,8 @@ export const fetchCharacterDetails = createAsyncThunk(
     async (characterId: number) => {
         try {
             const response = await api.get(`/characters/${characterId}`);
-            console.log('Fetched Character Details:', response.data);
             return response.data.data.results[0] as Character;
         } catch (error) {
-            console.error('Failed to fetch character details:', error);
             throw error;
         }
     }
