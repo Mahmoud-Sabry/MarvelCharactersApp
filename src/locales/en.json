@@ -1,0 +1,11 @@
+{
+    "characterNotFound": "Character not found.",
+    "noDescriptionAvailable": "No description available.",
+    "comics": "Comics:",
+    "toggleTheme": "Toggle theme",
+    "toggleLanguage": "Toggle language",
+    "searchPlaceholder": "Search",
+    "loginTitle": "Login",
+    "homeTitle": "Home",
+    "characterDetailTitle": "Character Details"
+}
